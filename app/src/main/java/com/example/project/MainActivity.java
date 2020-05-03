@@ -13,11 +13,13 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.lang.annotation.Target;
 
@@ -33,7 +35,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 Dialog checkbox = onCreateDialog(null);
                 checkbox.show();
         });
-
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_API);
         mapFragment.getMapAsync(this);
     }
@@ -46,10 +47,54 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.checkbox);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.checkbox, null);
+        starving = findViewById(R.id.checkBox9);
+        vegetarian = findViewById(R.id.checkBox10);
+        chinese = findViewById((R.id.checkBox11));
+        japanese = findViewById(R.id.checkBox12);
+        korean = findViewById(R.id.checkBox13);
+        spicy = findViewById(R.id.checkBox14);
+        diet = findViewById(R.id.checkBox15);
         builder.setView(view)
                 .setPositiveButton("Start", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
+                        if (starving.isChecked()) {
 
+                        } else {
+
+                        }
+                        if (vegetarian.isChecked()) {
+
+                        } else {
+
+                        }
+                        if (chinese.isChecked()) {
+
+                        } else {
+
+                        }
+                        if (japanese.isChecked()) {
+
+                        } else {
+
+                        }
+                        if (korean.isChecked()) {
+
+                        } else {
+
+                        }
+                        if (spicy.isChecked()) {
+
+                        } else {
+
+                        }
+                        if (diet.isChecked()) {
+
+                        } else {
+
+                        }
+                        LatLng restaurant = new LatLng(40.109509, -88.230744);
+                        mapAPI.addMarker(new MarkerOptions().position(restaurant).title("Unknown"));
+                        mapAPI.moveCamera(CameraUpdateFactory.newLatLng(restaurant));
                         dialog.cancel();
                     }
                 })
