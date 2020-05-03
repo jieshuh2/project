@@ -26,15 +26,23 @@ import java.lang.annotation.Target;
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
     GoogleMap mapAPI;
     SupportMapFragment mapFragment;
+    private Restaurant evo, pvp, mcDonald, chicken, sakanaya, teamoji;
     private CheckBox starving, vegetarian, diet, chinese, japanese, korean, spicy;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findViewById (R.id.button2).setOnClickListener(v -> {
+                mapAPI.clear();
                 Dialog checkbox = onCreateDialog(null);
                 checkbox.show();
         });
+        evo = new Restaurant("EVO", 40.109509, -88.230744);
+        pvp = new Restaurant ("PVP",40.110137, -88.229805);
+        mcDonald = new Restaurant("mcDonald", 40.110445, -88.229792);
+        chicken = new Restaurant ("bb.q premium chicken", 40.106590, -88.221313);
+        sakanaya = new Restaurant("Sakanaya", 40.110103, -88.232850);
+        teamoji = new Restaurant ("Teamoji", 40.110103, -88.229657);
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_API);
         mapFragment.getMapAsync(this);
     }
@@ -44,7 +52,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mapAPI = googleMap;
     }
     public Dialog onCreateDialog(final Bundle savedInstanceState){
-        setContentView(R.layout.checkbox);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.checkbox, null);
         starving = findViewById(R.id.checkBox9);
@@ -57,44 +64,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         builder.setView(view)
                 .setPositiveButton("Start", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
-                        if (starving.isChecked()) {
-
-                        } else {
-
-                        }
-                        if (vegetarian.isChecked()) {
-
-                        } else {
-
-                        }
-                        if (chinese.isChecked()) {
-
-                        } else {
-
-                        }
-                        if (japanese.isChecked()) {
-
-                        } else {
-
-                        }
-                        if (korean.isChecked()) {
-
-                        } else {
-
-                        }
-                        if (spicy.isChecked()) {
-
-                        } else {
-
-                        }
-                        if (diet.isChecked()) {
-
-                        } else {
-
-                        }
-                        LatLng restaurant = new LatLng(40.109509, -88.230744);
-                        mapAPI.addMarker(new MarkerOptions().position(restaurant).title("Unknown"));
-                        mapAPI.moveCamera(CameraUpdateFactory.newLatLng(restaurant));
+                        Restaurant restaurant = choice();
+                        mapAPI.addMarker(new MarkerOptions().position(restaurant.getLocation()).title(restaurant.getName()));
+                        mapAPI.moveCamera(CameraUpdateFactory.newLatLngZoom(restaurant.getLocation(), 18.33F));
                         dialog.cancel();
                     }
                 })
@@ -107,4 +79,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         // Create the AlertDialog object and return it
         return builder.create();
     }
+    public Restaurant choice() {
+        return pvp;
+    }
 }
+
