@@ -9,9 +9,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Toast;
+import java.lang.Object;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Random;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,13 +23,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.lang.annotation.Target;
+
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
     GoogleMap mapAPI;
     SupportMapFragment mapFragment;
-    private Restaurant evo, pvp, mcDonald, chicken, sakanaya, teamoji;
-    private CheckBox starving, vegetarian, diet, chinese, japanese, korean, spicy;
+    private Restaurant evo, pvp, mcDonald, chicken, sakanaya, teamoji, crepes, burger, latea, panda, subway, buffet;
+    private CheckBox starving, hamburger, diet, chinese, japanese, korean, spicy, quick;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +45,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         chicken = new Restaurant ("bb.q premium chicken", 40.106590, -88.221313);
         sakanaya = new Restaurant("Sakanaya", 40.110103, -88.232850);
         teamoji = new Restaurant ("Teamoji", 40.110103, -88.229657);
+        latea = new Restaurant("Latea bubble tea lounge", 40.111020, -88.230890);
+        burger = new Restaurant("Howdy Burger",36.146851, -95.958649);
+        crepes = new Restaurant("Paris super crepes", 40.111017, -88.230604);
+        panda = new Restaurant("Panda Express", 40.110490, -88.229151);
+        subway = new Restaurant("Subway", 40.110448, -88.229524);
+        buffet = new Restaurant("Sunny China Buffet", 40.097623, -88.191235);
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_API);
         mapFragment.getMapAsync(this);
     }
@@ -54,16 +62,78 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public Dialog onCreateDialog(final Bundle savedInstanceState){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.checkbox, null);
-        starving = findViewById(R.id.checkBox9);
-        vegetarian = findViewById(R.id.checkBox10);
-        chinese = findViewById((R.id.checkBox11));
-        japanese = findViewById(R.id.checkBox12);
-        korean = findViewById(R.id.checkBox13);
-        spicy = findViewById(R.id.checkBox14);
-        diet = findViewById(R.id.checkBox15);
+        boolean[] result = new boolean[8];
+        String[] check = {
+                "Starving", "Hamburger", "Chinese", "Japanese", "Korean", "Avoid Spicy", "Snack", "Quick to Prepare"
+        };
         builder.setView(view)
+                .setMultiChoiceItems(check, null,
+                        new DialogInterface.OnMultiChoiceClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which,
+                                                boolean isChecked) {
+                                if (isChecked) {
+                                    // If the user checked the item, add it to the selected items
+                                    result[which] = true;
+                                } else {
+                                    // Else, if the item is already in the array, remove it
+                                    result[which] = false;
+                                }
+                            }
+                        })
                 .setPositiveButton("Start", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
+                        if (result[0]) {
+                            evo.increase();
+                            chicken.increase();
+                            buffet.increase();
+                            sakanaya.decrease();
+                        }
+                        if (result[1]) {
+                            mcDonald.increase();
+                            burger.increase();
+                            burger.increase();
+                        }
+                        if (result[2]) {
+                            panda.increase();
+                            buffet.increase();
+                            evo.increase();
+                            evo.increase();
+                            evo.increase();
+                        }
+                        if (result[3]) {
+                            sakanaya.increase();
+                            sakanaya.increase();
+                            sakanaya.increase();
+                        }
+                        if (result[4]) {
+                            chicken.increase();
+                            chicken.increase();
+                            chicken.increase();
+                        }
+                        if (result[5]) {
+                            evo.clear();
+                            chicken.decrease();
+                            chicken.decrease();
+
+                        }
+                        if (result[6]) {
+                            latea.increase();
+                            teamoji.increase();
+                            teamoji.increase();
+                            crepes.increase();
+                            crepes.increase();
+                            crepes.increase();
+
+                        }
+                        if (result[7]) {
+                            subway.increase();
+                            subway.increase();
+                            mcDonald.increase();
+                            mcDonald.increase();
+                            panda.increase();
+                            panda.increase();
+                        }
                         Restaurant restaurant = choice();
                         mapAPI.addMarker(new MarkerOptions().position(restaurant.getLocation()).title(restaurant.getName()));
                         mapAPI.moveCamera(CameraUpdateFactory.newLatLngZoom(restaurant.getLocation(), 18.33F));
@@ -80,7 +150,22 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         return builder.create();
     }
     public Restaurant choice() {
-        return pvp;
+        Restaurant[] restaurants = {
+                evo,  pvp, mcDonald, chicken, sakanaya, teamoji, latea, burger, burger, crepes, panda, subway, buffet
+        };
+        Restaurant choice = evo;
+        for (int i = 0; i < restaurants.length; i++) {
+            if (choice.getScore() < restaurants[i].getScore()) {
+                choice = restaurants[i];
+            }
+            if (choice.getScore() == restaurants[i].getScore()) {
+                Random random = new Random();
+                if (random.nextBoolean()) {
+                    choice = restaurants[i];
+                }
+            }
+        }
+        return choice;
     }
 }
 

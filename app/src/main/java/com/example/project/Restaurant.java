@@ -25,4 +25,7 @@ public class Restaurant {
     public LatLng getLocation() {
         return location;
     }
+    public void clear() {
+        score = 0;
+    }
 }
